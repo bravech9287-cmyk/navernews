@@ -30,6 +30,7 @@ import type {
   PetTourInfo,
   AreaCode,
 } from "@/lib/types/tour";
+import type { PaginatedResponse } from "@/lib/types/pagination";
 
 /**
  * 커스텀 에러 클래스
@@ -185,6 +186,18 @@ function extractItems<T>(response: ApiResponse<T>): T[] {
 }
 
 /**
+ * 페이지네이션 정보 추출
+ */
+function extractPaginationInfo(response: ApiResponse<unknown>) {
+  const body = response.response.body;
+  return {
+    totalCount: body.totalCount || 0,
+    numOfRows: body.numOfRows || 20,
+    pageNo: body.pageNo || 1,
+  };
+}
+
+/**
  * 지역코드 조회 (areaCode2)
  * @param areaCode - 상위 지역코드 (선택, 없으면 시/도 목록)
  */
@@ -221,10 +234,13 @@ export interface GetAreaBasedListParams {
 
 export async function getAreaBasedList(
   params: GetAreaBasedListParams
-): Promise<TourItem[]> {
+): Promise<PaginatedResponse<TourItem>> {
+  const numOfRows = params.numOfRows || 20;
+  const pageNo = params.pageNo || 1;
+  
   const commonParams = getCommonParams({
-    numOfRows: params.numOfRows || 20,
-    pageNo: params.pageNo || 1,
+    numOfRows,
+    pageNo,
   });
 
   const queryParams: Record<string, string> = { ...commonParams };
@@ -242,7 +258,18 @@ export async function getAreaBasedList(
   const url = `${BASE_URL}/areaBasedList2?${queryString}`;
 
   const response = await fetchWithRetry<TourItem>(url);
-  return extractItems(response);
+  const items = extractItems(response);
+  const pagination = extractPaginationInfo(response);
+  
+  const totalPages = Math.ceil(pagination.totalCount / numOfRows);
+
+  return {
+    items,
+    totalCount: pagination.totalCount,
+    numOfRows,
+    pageNo,
+    totalPages,
+  };
 }
 
 /**
@@ -264,14 +291,17 @@ export interface SearchKeywordParams {
 
 export async function searchKeyword(
   params: SearchKeywordParams
-): Promise<TourItem[]> {
+): Promise<PaginatedResponse<TourItem>> {
   if (!params.keyword || params.keyword.trim() === "") {
     throw new TourApiError("Keyword is required");
   }
 
+  const numOfRows = params.numOfRows || 20;
+  const pageNo = params.pageNo || 1;
+
   const commonParams = getCommonParams({
-    numOfRows: params.numOfRows || 20,
-    pageNo: params.pageNo || 1,
+    numOfRows,
+    pageNo,
   });
 
   const queryParams: Record<string, string> = {
@@ -292,7 +322,18 @@ export async function searchKeyword(
   const url = `${BASE_URL}/searchKeyword2?${queryString}`;
 
   const response = await fetchWithRetry<TourItem>(url);
-  return extractItems(response);
+  const items = extractItems(response);
+  const pagination = extractPaginationInfo(response);
+  
+  const totalPages = Math.ceil(pagination.totalCount / numOfRows);
+
+  return {
+    items,
+    totalCount: pagination.totalCount,
+    numOfRows,
+    pageNo,
+    totalPages,
+  };
 }
 
 /**

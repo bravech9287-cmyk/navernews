@@ -19,9 +19,16 @@ import { cn } from "@/lib/utils";
 interface TourCardProps {
   tour: TourItem;
   className?: string;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
-export function TourCard({ tour, className }: TourCardProps) {
+export function TourCard({
+  tour,
+  className,
+  onClick,
+  isSelected = false,
+}: TourCardProps) {
   const imageUrl = tour.firstimage || tour.firstimage2;
   const typeName = ContentTypeName[tour.contenttypeid] || "관광지";
   const address = tour.addr1 || "주소 정보 없음";
@@ -29,11 +36,22 @@ export function TourCard({ tour, className }: TourCardProps) {
   return (
     <Link
       href={`/places/${tour.contentid}`}
+      onClick={(e) => {
+        // onClick이 있으면 onClick 실행 (링크 이동은 그대로)
+        if (onClick) {
+          onClick();
+        }
+      }}
       className={cn(
-        "group block bg-card rounded-xl shadow-md border border-border overflow-hidden",
+        "group block bg-card rounded-xl shadow-md border overflow-hidden",
         "hover:shadow-xl hover:scale-[1.02] transition-all duration-300",
+        "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+        isSelected
+          ? "border-primary shadow-lg ring-2 ring-primary ring-offset-2"
+          : "border-border hover:border-primary/50",
         className
       )}
+      aria-label={`${tour.title} 상세보기`}
     >
       {/* 썸네일 이미지 */}
       <div className="relative w-full h-48 bg-muted overflow-hidden">

@@ -59,13 +59,13 @@ export default function RootLayout({
         baseTheme: undefined, // 다크모드 지원을 위해 기본 테마 사용
       }}
     >
-      <html lang="ko">
+      <html lang="ko" className="h-full">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
         >
           <SyncUserProvider>
             <Navbar />
-            {children}
+            <div className="flex-1">{children}</div>
             <Toaster />
           </SyncUserProvider>
         </body>

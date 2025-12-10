@@ -10,9 +10,10 @@
  */
 
 import { getAreaBasedList, getAreaCode, searchKeyword } from "@/lib/api/tour-api";
-import { TourList } from "@/components/tour-list";
 import { TourFilters } from "@/components/tour-filters";
 import { TourSearch } from "@/components/tour-search";
+import { TourMapView } from "@/components/tour-map-view";
+import { Pagination } from "@/components/pagination";
 import { Footer } from "@/components/Footer";
 
 interface HomeProps {
@@ -37,6 +38,7 @@ export default async function Home({ searchParams }: HomeProps) {
   let error: Error | null = null;
   let areas: Array<{ code: string; name: string }> = [];
   let resultCount = 0;
+  let totalPages = 1;
 
   // 지역 목록 조회
   try {
@@ -67,8 +69,10 @@ export default async function Home({ searchParams }: HomeProps) {
         searchParams.contentTypeId = contentTypeId;
       }
 
-      tours = await searchKeyword(searchParams);
-      resultCount = tours.length;
+      const result = await searchKeyword(searchParams);
+      tours = result.items;
+      resultCount = result.totalCount;
+      totalPages = result.totalPages;
     } else {
       // 필터 API 사용
       const queryParams: Parameters<typeof getAreaBasedList>[0] = {
@@ -84,8 +88,10 @@ export default async function Home({ searchParams }: HomeProps) {
         queryParams.contentTypeId = contentTypeId;
       }
 
-      tours = await getAreaBasedList(queryParams);
-      resultCount = tours.length;
+      const result = await getAreaBasedList(queryParams);
+      tours = result.items;
+      resultCount = result.totalCount;
+      totalPages = result.totalPages;
     }
   } catch (err) {
     error =
@@ -102,20 +108,22 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <>
       {/* 메인 컨텐츠 영역 */}
-      <main className="min-h-[calc(100vh-4rem)]">
-        <div className="container mx-auto max-w-7xl px-4 py-8">
+      <main className="min-h-[calc(100vh-4rem)] flex flex-col">
+        <div className="container mx-auto max-w-7xl px-4 py-6 md:py-8 flex-1">
           {/* Hero Section */}
           <section className="mb-12 text-center space-y-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-4 md:text-5xl lg:text-6xl">
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold mb-4 md:text-5xl lg:text-6xl bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 한국의 아름다운 관광지를 탐험하세요
               </h1>
-              <p className="text-lg text-muted-foreground md:text-xl">
+              <p className="text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto">
                 전국의 관광지 정보를 쉽게 검색하고 발견하세요
               </p>
             </div>
             {/* Hero 검색창 */}
-            <TourSearch variant="hero" />
+            <div className="pt-4">
+              <TourSearch variant="hero" />
+            </div>
           </section>
 
           {/* 필터 영역 */}
@@ -133,16 +141,31 @@ export default async function Home({ searchParams }: HomeProps) {
                   </span>
                   {" 검색 결과 "}
                   <span className="font-semibold text-foreground">
-                    {resultCount}개
+                    {resultCount.toLocaleString()}개
                   </span>
                 </p>
               </div>
             </section>
           )}
 
-          {/* 관광지 목록 영역 */}
+          {/* 관광지 목록 + 지도 영역 */}
           <section className="space-y-8">
-            <TourList tours={tours} error={error} />
+            <TourMapView
+              tours={tours}
+              error={error}
+              totalCount={resultCount}
+              initialPageNo={pageNo}
+              enableInfiniteScroll={true}
+            />
+            
+            {/* 페이지네이션 (무한 스크롤 비활성화 시 표시) */}
+            {!error && tours.length > 0 && (
+              <div className="flex flex-col items-center gap-2 pt-4">
+                <p className="text-sm text-muted-foreground">
+                  {tours.length.toLocaleString()} / {resultCount.toLocaleString()}개 표시
+                </p>
+              </div>
+            )}
           </section>
         </div>
       </main>

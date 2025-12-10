@@ -19,6 +19,8 @@ interface TourListProps {
   isLoading?: boolean;
   error?: Error | null;
   onRetry?: () => void;
+  onTourClick?: (tour: TourItem) => void;
+  selectedTourId?: string;
   className?: string;
 }
 
@@ -27,6 +29,8 @@ export function TourList({
   isLoading = false,
   error = null,
   onRetry,
+  onTourClick,
+  selectedTourId,
   className,
 }: TourListProps) {
   // 로딩 상태
@@ -39,10 +43,17 @@ export function TourList({
         )}
       >
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="space-y-4">
-            <Skeleton className="w-full h-48 rounded-xl" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
+          <div
+            key={i}
+            className="bg-card rounded-xl shadow-md border border-border overflow-hidden"
+          >
+            <Skeleton className="w-full h-48 rounded-t-xl" />
+            <div className="p-4 space-y-3">
+              <Skeleton className="h-5 w-20 rounded-full" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
           </div>
         ))}
       </div>
@@ -62,12 +73,28 @@ export function TourList({
   // 빈 상태
   if (tours.length === 0) {
     return (
-      <div className="text-center py-16">
-        <p className="text-lg text-muted-foreground mb-2">
-          관광지가 없습니다.
-        </p>
-        <p className="text-sm text-muted-foreground">
-          다른 필터 조건을 선택해보세요.
+      <div className="text-center py-16 px-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+          <svg
+            className="w-8 h-8 text-muted-foreground"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold text-foreground mb-2">
+          관광지가 없습니다
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          검색 조건이나 필터를 변경해보세요. 다른 지역이나 관광 타입을 선택하면
+          더 많은 결과를 찾을 수 있습니다.
         </p>
       </div>
     );
@@ -82,7 +109,12 @@ export function TourList({
       )}
     >
       {tours.map((tour) => (
-        <TourCard key={tour.contentid} tour={tour} />
+        <TourCard
+          key={tour.contentid}
+          tour={tour}
+          onClick={() => onTourClick?.(tour)}
+          isSelected={selectedTourId === tour.contentid}
+        />
       ))}
     </div>
   );

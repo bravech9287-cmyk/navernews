@@ -61,9 +61,11 @@ export function TourFilters({ areas, className }: TourFiltersProps) {
   return (
     <div
       className={cn(
-        "space-y-4 p-4 bg-card border rounded-lg shadow-sm",
+        "space-y-4 p-4 md:p-6 bg-card border rounded-lg shadow-sm",
         className
       )}
+      role="region"
+      aria-label="관광지 필터"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -83,7 +85,7 @@ export function TourFilters({ areas, className }: TourFiltersProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* 지역 필터 */}
         <div className="space-y-2">
           <label className="text-sm font-medium">지역</label>

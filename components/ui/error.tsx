@@ -32,13 +32,20 @@ export function Error({
         className
       )}
     >
-      <AlertCircle className="h-12 w-12 text-destructive" />
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-destructive mb-2">{title}</h3>
-        <p className="text-sm text-muted-foreground">{message}</p>
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/20 mb-2">
+        <AlertCircle className="h-8 w-8 text-destructive" />
+      </div>
+      <div className="text-center space-y-2">
+        <h3 className="text-lg font-semibold text-destructive">{title}</h3>
+        <p className="text-sm text-muted-foreground max-w-md">{message}</p>
       </div>
       {onRetry && (
-        <Button onClick={onRetry} variant="outline" size="sm">
+        <Button
+          onClick={onRetry}
+          variant="outline"
+          size="sm"
+          className="mt-2"
+        >
           <RefreshCw className="h-4 w-4 mr-2" />
           다시 시도
         </Button>
