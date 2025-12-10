@@ -95,12 +95,10 @@ export default defineConfig({
 `package.json`
 ```json
 {
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "test": "vitest" // 추가
-  }
+"scripts": {
+  "dev": "next dev --turbopack -p 3000",
+  ...
+}
 }
 ```
 

@@ -1,0 +1,32 @@
+/**
+ * @file loading.tsx
+ * @description 로딩 스피너 컴포넌트
+ *
+ * 데이터 로딩 중 표시할 스피너 컴포넌트입니다.
+ * 다양한 크기와 스타일을 지원합니다.
+ */
+
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface LoadingProps {
+  className?: string;
+  size?: "sm" | "md" | "lg";
+  text?: string;
+}
+
+const sizeMap = {
+  sm: "h-4 w-4",
+  md: "h-8 w-8",
+  lg: "h-12 w-12",
+};
+
+export function Loading({ className, size = "md", text }: LoadingProps) {
+  return (
+    <div className={cn("flex flex-col items-center justify-center gap-2", className)}>
+      <Loader2 className={cn("animate-spin text-primary", sizeMap[size])} />
+      {text && <p className="text-sm text-muted-foreground">{text}</p>}
+    </div>
+  );
+}
+
