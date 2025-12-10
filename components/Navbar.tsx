@@ -2,7 +2,8 @@ import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, BarChart3, Bookmark } from "lucide-react";
+import { MapPin, BarChart3, Bookmark } from "lucide-react";
+import { TourSearch } from "@/components/tour-search";
 
 const Navbar = () => {
   return (
@@ -42,16 +43,8 @@ const Navbar = () => {
 
         {/* 검색창 및 로그인 */}
         <div className="flex items-center gap-4">
-          {/* 검색창 (모바일에서는 숨김, 나중에 검색 기능 구현 시 사용) */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-md border bg-background">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="관광지 검색..."
-              className="bg-transparent border-none outline-none text-sm w-48"
-              disabled
-            />
-          </div>
+          {/* 검색창 */}
+          <TourSearch variant="navbar" />
 
           {/* 로그인 버튼 */}
           <SignedOut>

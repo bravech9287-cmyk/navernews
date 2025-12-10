@@ -6,6 +6,8 @@
  * 재시도 버튼을 포함할 수 있습니다.
  */
 
+"use client";
+
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
