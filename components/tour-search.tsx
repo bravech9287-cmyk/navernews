@@ -64,6 +64,7 @@ export function TourSearch({ className, variant = "navbar" }: TourSearchProps) {
             onChange={(e) => setKeyword(e.target.value)}
             onKeyDown={handleKeyDown}
             className="pl-9 pr-10 w-48 md:w-64"
+            aria-label="관광지 검색"
           />
           {isPending && (
             <Loader2 className="absolute right-3 h-4 w-4 animate-spin text-muted-foreground" />
@@ -74,6 +75,7 @@ export function TourSearch({ className, variant = "navbar" }: TourSearchProps) {
           size="sm"
           disabled={isPending}
           className="shrink-0"
+          aria-label="검색 실행"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -98,6 +100,7 @@ export function TourSearch({ className, variant = "navbar" }: TourSearchProps) {
             onChange={(e) => setKeyword(e.target.value)}
             onKeyDown={handleKeyDown}
             className="pl-12 pr-4 py-6 text-base h-auto shadow-lg"
+            aria-label="관광지 검색 (관광지명, 주소, 설명으로 검색)"
           />
           {isPending && (
             <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-muted-foreground" />

@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { MapPin, BarChart3, Bookmark } from "lucide-react";
 import { TourSearch } from "@/components/tour-search";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Navbar = () => {
   return (
@@ -51,6 +52,9 @@ const Navbar = () => {
         <div className="flex items-center gap-2 md:gap-4">
           {/* 검색창 */}
           <TourSearch variant="navbar" />
+
+          {/* 테마 전환 버튼 */}
+          <ThemeToggle />
 
           {/* 로그인 버튼 */}
           <SignedOut>

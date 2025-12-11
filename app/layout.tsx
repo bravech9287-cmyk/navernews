@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { koKR } from "@clerk/localizations";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 
 import Navbar from "@/components/Navbar";
+import { SkipToContent } from "@/components/skip-to-content";
 import { SyncUserProvider } from "@/components/providers/sync-user-provider";
+import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
 import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
@@ -32,6 +35,16 @@ export const metadata: Metadata = {
     "반려동물 동반 여행",
   ],
   authors: [{ name: "My Trip" }],
+  manifest: "/manifest.json",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "My Trip",
+  },
   openGraph: {
     title: "My Trip - 한국 관광지 정보 서비스",
     description:
@@ -59,15 +72,26 @@ export default function RootLayout({
         baseTheme: undefined, // 다크모드 지원을 위해 기본 테마 사용
       }}
     >
-      <html lang="ko" className="h-full">
+      <html lang="ko" className="h-full" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
         >
-          <SyncUserProvider>
-            <Navbar />
-            <div className="flex-1">{children}</div>
-            <Toaster />
-          </SyncUserProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ServiceWorkerProvider />
+            <SkipToContent />
+            <SyncUserProvider>
+              <Navbar />
+              <main id="main-content" className="flex-1 max-w-7xl mx-auto w-full px-4 pt-16">
+                {children}
+              </main>
+              <Toaster />
+            </SyncUserProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
